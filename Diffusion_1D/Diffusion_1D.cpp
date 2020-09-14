@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include <bitmap_lib/bitmap_image.hpp>
+#include <bitmap_image.hpp>
 #include<ppl.h>
 
 
@@ -109,7 +109,7 @@ void Erzeuge_Output_Videos(std::string& ffmpeg_Dir, std::string Bilder)
 
     std::string command_data_Potential = Bilder+"\\";
 
-    std::string command_out_Potential = ffmpeg_Dir + "Diffusion.mp4";
+    std::string command_out_Potential = ffmpeg_Dir + "\\Diffusion.mp4";
  
 
     std::string command_create_Potential_movie = command_movie_front + command_data_Potential + command_movie_middle + command_out_Potential;
@@ -118,7 +118,7 @@ void Erzeuge_Output_Videos(std::string& ffmpeg_Dir, std::string Bilder)
     std::fstream Ouput;
 
     Ouput.open("ffmpeg.bat", std::ios::out);
-    Ouput << "d:\n";
+    Ouput <<ffmpeg_Dir[0] <<":\n";
     Ouput << command_cd_ffmpeg + "\n";
     Ouput << command_create_Potential_movie + "\n";
    
@@ -153,10 +153,31 @@ int main()
     std::cout << "Eingabe Volumenfluss[mL/min]:";
     std::cin >> Fluss;
 
-    double Pulsdauer;
-    std::cout << "Eingabe Pulsdauer[s]:";
-    std::cin >> Pulsdauer;
+    double Pulsdauer=0;
+    char Input_Modus='a';
+    
+    std::cout << "Eingabe Eingangsmodus: Rechteck(r)\tGauss(g)\n";
+    std::cin >> Input_Modus;
     std::cout << std::endl;
+
+    if (Input_Modus == 'r')
+    {
+        std::cout << "Eingabe Pulsdauer[s]:";
+        std::cin >> Pulsdauer;
+        std::cout << std::endl;
+    }
+    else if (Input_Modus == 'g')
+    {
+        std::cout << "Eingabe Reduktionszeit[s]:";
+        std::cin >> Pulsdauer;
+        std::cout << std::endl;
+    }
+    else
+    {
+        std::cout << "Fehlerhafte Auswahl\n\nProgramm beenden";
+        return -1;
+    }
+    
 
 
 
@@ -190,7 +211,7 @@ int main()
         
     double LaengePerStep = 0.001; //[m] Gute Laenge für aktuelles Problem für kleineren Diff vielleicht kleinere Laenge
 
-    double Timestep = 0.002;   //[s] Guter Timestep aktuell, vielleicht kleiner für schnelleren Fluss?
+    double Timestep = 0.0002;   //[s] Guter Timestep aktuell, vielleicht kleiner für schnelleren Fluss?
     
     double t_max = 15*60;//Sekunden
 
@@ -222,15 +243,25 @@ int main()
 
     std::vector<bitmap_image> Images;
     Images.reserve(10000);
-            
-    std::string  Ordner_Name = "D:\\NewMain\\Universitaet\\Das_Letzte_Jahr_ist_Over\\Vertiefung\\Diffusion\\Bilder", ffmpeg_dir = "D:\\NewMain\\Universitaet\\Das_Letzte_Jahr_ist_Over\\Vertiefung\\Diffusion\\";
+      
+    std::string  Ordner_Name;
+    std::cout << "Eingabe Bilder Ordner:";
+    std::cin >> Ordner_Name;
+    std::cout << std::endl;
+
+    std::string ffmpeg_dir;
+    std::cout << "Eingabe ffmpeg Ordner:";
+    std::cin >> ffmpeg_dir;
+    std::cout << std::endl;
+
+    //std::string  Ordner_Name = "D:\\NewMain\\Universitaet\\Das_Letzte_Jahr_ist_Over\\Vertiefung\\Diffusion\\Bilder", ffmpeg_dir = "D:\\NewMain\\Universitaet\\Das_Letzte_Jahr_ist_Over\\Vertiefung\\Diffusion\\";
     
     int g = 0;
 
     for (int t = 0; t < t_max/Timestep; t++)
     {
 
-        if(t%10==0)
+        if(t%100==0)
         { 
         Images.push_back(Erzeuge_Heatmap_BMP(Farbpalette, Gitter,Laenge, LaengePerStep));
 
@@ -239,23 +270,39 @@ int main()
         TCD.push_back(Gitter[Gittergroesse - 100]);
         }
 
-        if (t % 500 == 0)
+        if (t % 5000 == 0)
         {
-            std::cout << "Simulation:" << t/500 << " Sekunden\t" << t << " | " << int(t_max / Timestep) << std::endl;
+            std::cout << "Simulation:" << t/5000 << " Sekunden\t" << t << " | " << int(t_max / Timestep) << std::endl;
         }
 
         //Gitter = Konzentration[Konzentration.size() - 1];
     
        //Randbedingung
-        if (t * Timestep < Pulsdauer)
+        if (Input_Modus == 'r')
         {
-            Gitter[0] = 1.0;
-            Gitter_dt[0] = 1.0;
+            if (t * Timestep < Pulsdauer)
+            {
+                Gitter[0] = 1.0;
+                Gitter_dt[0] = 1.0;
+            }
+            else
+            {
+                Gitter[0] = 0.0;
+                Gitter_dt[0] = 0.0;
+            }
         }
-        else
+        else//Pulsdauer = Reduktionszeit bei Gauß
         {
-            Gitter[0] = 0.0;
-            Gitter_dt[0] = 0.0;
+            if (t * Timestep < Pulsdauer)
+            {
+                Gitter[0] = 1.0 * exp(-0.5 * (t * Timestep - Pulsdauer * 0.5) * (t * Timestep - Pulsdauer * 0.5) / (Pulsdauer * 0.125 * Pulsdauer * 0.125));
+                Gitter_dt[0] = 1.0 * exp(-0.5 * ((t + 1) * Timestep - Pulsdauer * 0.5) * ((t + 1) * Timestep - Pulsdauer * 0.5) / (Pulsdauer * 0.125 * Pulsdauer * 0.125));
+            }
+            else
+            {
+                Gitter[0] = 0.0;
+                Gitter_dt[0] = 0.0;
+            }
         }
         
 
@@ -302,7 +349,7 @@ int main()
     
     //std::cout << Gitter[1] << std::endl;
 
-    if (Ende == Gittergroesse - 4 && t>10)
+    if (Ende == Gittergroesse - 4 && t*Timestep>10)
     {
         break;
     }
@@ -312,7 +359,7 @@ int main()
     
     std::fstream Datei;
 
-    Datei.open(ffmpeg_dir + "TCD.txt", std::ios::out);
+    Datei.open(ffmpeg_dir + "\\TCD.txt", std::ios::out);
 
     Datei << "Zeit [s]\tVolumenanteil [%/100]" << std::endl;
 

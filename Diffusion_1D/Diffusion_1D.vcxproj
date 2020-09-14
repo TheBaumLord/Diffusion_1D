@@ -94,7 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl\include;C:\Program Files\boost\blaze\blaze-3.6;C:\Program Files\boost;C:\Program Files\boost\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl\include;C:\Program Files\boost\blaze\blaze-3.6;C:\Program Files\boost;C:\Program Files\boost\boost_1_72_0;C:\Users\Realkatalyse\bitmap-master</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,7 +113,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl\include;C:\Program Files\boost\blaze\blaze-3.6;C:\Program Files\boost;C:\Program Files\boost\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl\include;C:\Program Files\boost\blaze\blaze-3.6;C:\Program Files\boost;C:\Program Files\boost\boost_1_72_0;C:\Users\Realkatalyse\bitmap-master</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,7 +134,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl\include;C:\Program Files\boost\blaze\blaze-3.6;C:\Program Files\boost;C:\Program Files\boost\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl\include;C:\Program Files\boost\blaze\blaze-3.6;C:\Program Files\boost;C:\Program Files\boost\boost_1_72_0;C:\Users\Realkatalyse\bitmap-master</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
@@ -158,7 +158,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl\include;C:\Program Files\boost\blaze\blaze-3.6;C:\Program Files\boost;C:\Program Files\boost\boost_1_72_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mkl\include;C:\Program Files\boost\blaze\blaze-3.6;C:\Program Files\boost;C:\Program Files\boost\boost_1_72_0;C:\Users\Realkatalyse\bitmap-master</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
