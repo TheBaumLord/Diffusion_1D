@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include <bitmap_image.hpp>
+#include <bitmap_lib/bitmap_image.hpp>
 #include<ppl.h>
 
 
@@ -242,7 +242,7 @@ int main()
 
 
     std::vector<bitmap_image> Images;
-    Images.reserve(10000);
+    Images.reserve(45000);
       
     std::string  Ordner_Name;
     std::cout << "Eingabe Bilder Ordner:";
@@ -250,9 +250,11 @@ int main()
     std::cout << std::endl;
 
     std::string ffmpeg_dir;
-    std::cout << "Eingabe ffmpeg Ordner:";
+    std::cout << "Eingabe ffmpeg:";
     std::cin >> ffmpeg_dir;
     std::cout << std::endl;
+
+    ffmpeg_dir.erase(ffmpeg_dir.end() - 11, ffmpeg_dir.end());
 
     //std::string  Ordner_Name = "D:\\NewMain\\Universitaet\\Das_Letzte_Jahr_ist_Over\\Vertiefung\\Diffusion\\Bilder", ffmpeg_dir = "D:\\NewMain\\Universitaet\\Das_Letzte_Jahr_ist_Over\\Vertiefung\\Diffusion\\";
     
@@ -263,9 +265,15 @@ int main()
 
         if(t%100==0)
         { 
-        Images.push_back(Erzeuge_Heatmap_BMP(Farbpalette, Gitter,Laenge, LaengePerStep));
+        //Images.push_back(Erzeuge_Heatmap_BMP(Farbpalette, Gitter,Laenge, LaengePerStep));
+            //Bilder in Vektor speichern
+            bitmap_image temp_Bild = Erzeuge_Heatmap_BMP(Farbpalette, Gitter, Laenge, LaengePerStep);
+        //Images[g].save_image(Ordner_Name + "\\img" + std::to_string(g + 1) + ".bmp");
+            temp_Bild.save_image(Ordner_Name + "\\img" + std::to_string(g + 1) + ".bmp");
 
-        Images[g].save_image(Ordner_Name + "\\img" + std::to_string(g + 1) + ".bmp");
+        //bitmap_image kkk(1, 1);
+        //Images[g] = kkk;
+
         g++;
         TCD.push_back(Gitter[Gittergroesse - 100]);
         }
