@@ -154,10 +154,14 @@ int main()
     std::cin >> Fluss;
 
     double Pulsdauer=0;
-    char Input_Modus='a';
+    char Input_Modus='a', Output_Modus='a';
     
     std::cout << "Eingabe Eingangsmodus: Rechteck(r)\tGauss(g)\n";
     std::cin >> Input_Modus;
+    std::cout << std::endl;
+
+    std::cout << "Eingabe Ausgangsmodus: Video(v)\tData-only(d)\n";
+    std::cin >> Output_Modus;
     std::cout << std::endl;
 
     if (Input_Modus == 'r')
@@ -255,19 +259,24 @@ int main()
     std::cout << "Eingabe Bilder Ordner:";
     std::cin >> Ordner_Name;
     std::cout << std::endl;
-
+    
     std::string ffmpeg_dir;
-    std::cout << "Eingabe ffmpeg:";
-    std::cin >> ffmpeg_dir;
-    std::cout << std::endl;
+    if(Output_Modus=='v')
+    { 
+        std::cout << "Eingabe ffmpeg:";
+        std::cin >> ffmpeg_dir;
+        std::cout << std::endl;
+        ffmpeg_dir.erase(ffmpeg_dir.end() - 11, ffmpeg_dir.end());
+    }
 
-    ffmpeg_dir.erase(ffmpeg_dir.end() - 11, ffmpeg_dir.end());
+    
 
     //std::string  Ordner_Name = "D:\\NewMain\\Universitaet\\Das_Letzte_Jahr_ist_Over\\Vertiefung\\Diffusion\\Bilder", ffmpeg_dir = "D:\\NewMain\\Universitaet\\Das_Letzte_Jahr_ist_Over\\Vertiefung\\Diffusion\\";
     
     int g = 0;
     int Save_Intervall = int(round(0.02 / Timestep));
     int Sekunde_Intervall = int(round(1.0 / Timestep));
+    
 
     for (int t = 0; t < t_max/Timestep; t++)
     {
@@ -279,13 +288,16 @@ int main()
         //Images[g].save_image(Ordner_Name + "\\img" + std::to_string(g + 1) + ".bmp");
 
         //Images[g] = Leeres_Bild;
+            if (Output_Modus == 'v')
+            {
+                bitmap_image Aktuelles_Bild = Erzeuge_Heatmap_BMP(Farbpalette, Gitter, Laenge, LaengePerStep);
 
-        bitmap_image Aktuelles_Bild = Erzeuge_Heatmap_BMP(Farbpalette, Gitter, Laenge, LaengePerStep);
+                Aktuelles_Bild.save_image(Ordner_Name + "\\img" + std::to_string(g + 1) + ".bmp");
+            }
+            
 
-        Aktuelles_Bild.save_image(Ordner_Name + "\\img" + std::to_string(g + 1) + ".bmp");
-
-        g++;
-        TCD.push_back(Gitter[Gittergroesse - 100]);
+            g++;
+            TCD.push_back(Gitter[Gittergroesse - 100]);
         }
 
         if (t % Sekunde_Intervall == 0)
@@ -377,7 +389,7 @@ int main()
     
     std::fstream Datei;
 
-    Datei.open(ffmpeg_dir + "\\TCD.txt", std::ios::out);
+    Datei.open(Ordner_Name + "\\TCD.txt", std::ios::out);
 
     Datei << "Zeit [s]\tVolumenanteil [%/100]" << std::endl;
 
@@ -393,8 +405,11 @@ int main()
    
 
     //Speichere_BMPs(Images, Ordner_Name);
-
-    Erzeuge_Output_Videos(ffmpeg_dir,Ordner_Name);
+    if (Output_Modus == 'v')
+    {
+        Erzeuge_Output_Videos(ffmpeg_dir, Ordner_Name);
+    }
+    
 
 
 }
