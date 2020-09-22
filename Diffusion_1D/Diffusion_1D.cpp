@@ -5,7 +5,7 @@
 #include <vector>
 #include <bitmap_image.hpp>
 #include<ppl.h>
-
+#include<algorithm>
 
 
 void Farbpalette_Blau_zu_Rot_256(std::vector<rgb_t>& Farbpalette)
@@ -207,12 +207,18 @@ int main()
     }
             
         
-    double Diffusionskoeffizient = 1.7e-5;//[m^2/s]
+    double Diffusionskoeffizient = 1.7e-5;//[m^2/s] Schätzung für CO in Ar
         
     double LaengePerStep = 0.001; //[m] Gute Laenge für aktuelles Problem für kleineren Diff vielleicht kleinere Laenge
 
-    double Timestep = 0.0002;   //[s] Guter Timestep aktuell, vielleicht kleiner für schnelleren Fluss?
+    double Timestep = 0.002;   //[s] Guter Timestep aktuell, vielleicht kleiner für schnelleren Fluss? 2ms gut für 3ml/min bis 0.8mm -> 10cm/s
     
+    double min_Durchmesser = *std::min_element(Durchmesser.begin(), Durchmesser.end());
+    
+    Timestep = Timestep * (min_Durchmesser / 0.8) * (min_Durchmesser / 0.8) * (3.0 / Fluss);
+
+    //std::cout << min_Durchmesser;
+
     double t_max = 15*60;//Sekunden
 
     int Gittergroesse = int(Gesamtlange / LaengePerStep);
@@ -242,37 +248,49 @@ int main()
 
 
     std::vector<bitmap_image> Images;
-    Images.reserve(10000);
-      
+    Images.reserve(45000);
+    bitmap_image Leeres_Bild(1, 1);
+
     std::string  Ordner_Name;
     std::cout << "Eingabe Bilder Ordner:";
     std::cin >> Ordner_Name;
     std::cout << std::endl;
 
     std::string ffmpeg_dir;
-    std::cout << "Eingabe ffmpeg Ordner:";
+    std::cout << "Eingabe ffmpeg:";
     std::cin >> ffmpeg_dir;
     std::cout << std::endl;
+
+    ffmpeg_dir.erase(ffmpeg_dir.end() - 11, ffmpeg_dir.end());
 
     //std::string  Ordner_Name = "D:\\NewMain\\Universitaet\\Das_Letzte_Jahr_ist_Over\\Vertiefung\\Diffusion\\Bilder", ffmpeg_dir = "D:\\NewMain\\Universitaet\\Das_Letzte_Jahr_ist_Over\\Vertiefung\\Diffusion\\";
     
     int g = 0;
+    int Save_Intervall = int(round(0.02 / Timestep));
+    int Sekunde_Intervall = int(round(1.0 / Timestep));
 
     for (int t = 0; t < t_max/Timestep; t++)
     {
 
-        if(t%100==0)
+        if(t% Save_Intervall ==0)
         { 
-        Images.push_back(Erzeuge_Heatmap_BMP(Farbpalette, Gitter,Laenge, LaengePerStep));
+        //Images.push_back(Erzeuge_Heatmap_BMP(Farbpalette, Gitter,Laenge, LaengePerStep));
 
-        Images[g].save_image(Ordner_Name + "\\img" + std::to_string(g + 1) + ".bmp");
+        //Images[g].save_image(Ordner_Name + "\\img" + std::to_string(g + 1) + ".bmp");
+
+        //Images[g] = Leeres_Bild;
+
+        bitmap_image Aktuelles_Bild = Erzeuge_Heatmap_BMP(Farbpalette, Gitter, Laenge, LaengePerStep);
+
+        Aktuelles_Bild.save_image(Ordner_Name + "\\img" + std::to_string(g + 1) + ".bmp");
+
         g++;
         TCD.push_back(Gitter[Gittergroesse - 100]);
         }
 
-        if (t % 5000 == 0)
+        if (t % Sekunde_Intervall == 0)
         {
-            std::cout << "Simulation:" << t/5000 << " Sekunden\t" << t << " | " << int(t_max / Timestep) << std::endl;
+            std::cout << "Simulation:" << t/ Sekunde_Intervall << " Sekunden\t" << t << " | " << int(t_max / Timestep) << std::endl;
         }
 
         //Gitter = Konzentration[Konzentration.size() - 1];
